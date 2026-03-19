@@ -14,6 +14,7 @@ dashboard.section.buttons.val = {
 	dashboard.button("r", "󱋡 " .. " Recent files", "<cmd>Telescope oldfiles<cr>"),
 	dashboard.button("f", "󰈢 " .. " Find file", "<cmd>Telescope find_files<cr>"),
 	dashboard.button("g", "󰺮 " .. " Find text", "<cmd>Telescope live_grep<cr>"),
+	dashboard.button("o", " " .. " Open session", "<cmd>AutoSession search<cr>"),
 	dashboard.button("q", " " .. " Quit", "<cmd>qa<cr>"),
 }
 for _, button in ipairs(dashboard.section.buttons.val) do

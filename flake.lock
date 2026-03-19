@@ -135,6 +135,22 @@
         "type": "github"
       }
     },
+    "markdown-plus-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1773664365,
+        "narHash": "sha256-wZ9rLS+InCVSkQK+NZ2OYBox1I3dYbAOoP8xOeVudr8=",
+        "owner": "YousefHadder",
+        "repo": "markdown-plus.nvim",
+        "rev": "070c12a2b9dc12a8ab3a9fdcb96f8e74b69bda32",
+        "type": "github"
+      },
+      "original": {
+        "owner": "YousefHadder",
+        "repo": "markdown-plus.nvim",
+        "type": "github"
+      }
+    },
     "nixpkgs": {
       "locked": {
         "lastModified": 1718714799,
@@ -199,6 +215,7 @@
       "inputs": {
         "flake-utils": "flake-utils",
         "gen-luarc": "gen-luarc",
+        "markdown-plus-nvim": "markdown-plus-nvim",
         "nixpkgs": "nixpkgs_2"
       }
     },

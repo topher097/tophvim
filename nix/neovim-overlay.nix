@@ -50,6 +50,7 @@ with final.pkgs.lib; let
     neogit # https://github.com/TimUntersberger/neogit/
     gitsigns-nvim # https://github.com/lewis6991/gitsigns.nvim/
     vim-fugitive # https://github.com/tpope/vim-fugitive/
+    lazygit-nvim # https://github.com/kdheepak/lazygit.nvim
     # ^ git integration plugins
     # telescope and extensions
     telescope-nvim # https://github.com/nvim-telescope/telescope.nvim/
@@ -57,12 +58,15 @@ with final.pkgs.lib; let
     # telescope-smart-history-nvim # https://github.com/nvim-telescope/telescope-smart-history.nvim
     # ^ telescope and extensions
     # UI
+    nvim-tree-lua # File explorer | https://github.com/nvim-tree/nvim-tree.lua
     lualine-nvim # Status line | https://github.com/nvim-lualine/lualine.nvim/
     nvim-navic # Add LSP location to lualine | https://github.com/SmiteshP/nvim-navic
     statuscol-nvim # Status column | https://github.com/luukvbaal/statuscol.nvim/
     nvim-treesitter-context # nvim-treesitter-context
     # ^ UI
     # language support
+    render-markdown-nvim # https://github.com/MeanderingProgrammer/render-markdown.nvim
+    (mkNvimPlugin inputs.markdown-plus-nvim "markdown-plus.nvim") # https://github.com/YousefHadder/markdown-plus.nvim
     # ^ language support
     # navigation/editing enhancement plugins
     vim-unimpaired # predefined ] and [ navigation keymaps | https://github.com/tpope/vim-unimpaired/
@@ -73,6 +77,7 @@ with final.pkgs.lib; let
     # ^ navigation/editing enhancement plugins
     # Useful utilities
     nvim-unception # Prevent nested neovim sessions | nvim-unception
+    auto-session # Session management | https://github.com/rmagatti/auto-session
     # ^ Useful utilities
     # libraries that other plugins depend on
     sqlite-lua

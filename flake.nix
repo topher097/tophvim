@@ -12,6 +12,10 @@
     #   url = "github:Cassin01/wf.nvim";
     #   flake = false;
     # };
+    markdown-plus-nvim = {
+      url = "github:YousefHadder/markdown-plus.nvim";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {

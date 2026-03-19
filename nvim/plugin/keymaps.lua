@@ -8,6 +8,9 @@ local fn = vim.fn
 local keymap = vim.keymap
 local diagnostic = vim.diagnostic
 
+-- Exit insert mode and enter normal mode
+keymap.set('i', 'jj', '<Esc>', {noremap = true, silent = true})
+
 -- Yank from current position till end of current line
 keymap.set('n', 'Y', 'y$', { silent = true, desc = '[Y]ank to end of line' })
 
@@ -16,6 +19,7 @@ keymap.set('n', '[b', vim.cmd.bprevious, { silent = true, desc = 'previous [b]uf
 keymap.set('n', ']b', vim.cmd.bnext, { silent = true, desc = 'next [b]uffer' })
 keymap.set('n', '[B', vim.cmd.bfirst, { silent = true, desc = 'first [B]uffer' })
 keymap.set('n', ']B', vim.cmd.blast, { silent = true, desc = 'last [B]uffer' })
+keymap.set('n', 'db', vim.cmd.bdelete, { silent = true, desc = '[d]elete current [b]uffer'})
 
 -- Toggle the quickfix list (only opens if it is populated)
 local function toggle_qf_list()
