@@ -8,6 +8,18 @@
   -- empty setup using defaults
   require("nvim-tree").setup()
 
+  -- Open tree automatically when a file is opened
+  vim.api.nvim_create_autocmd("BufReadPost", {
+    once = true,
+    callback = function()
+      local buf = vim.api.nvim_get_current_buf()
+      local name = vim.api.nvim_buf_get_name(buf)
+      if name ~= "" and vim.bo[buf].buftype == "" then
+        require("nvim-tree.api").tree.open({ focus = false })
+      end
+    end,
+  })
+
   -- Toggle tree
   vim.keymap.set("n", "<leader>e", "<cmd>NvimTreeToggle<cr>", { desc = "Toggle file [e]xplorer" })
   vim.keymap.set("n", "<leader>ef", "<cmd>NvimTreeFocus<cr>", { desc = "Focus file [e]xplorer" })
