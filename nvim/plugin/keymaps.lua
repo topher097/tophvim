@@ -120,7 +120,14 @@ keymap.set('n', '<leader>fq', function()
 end, { silent = true, desc = '[f]loating windows: [q]uit/close all' })
 
 -- Remap Esc to switch to normal mode and Ctrl-Esc to pass Esc to terminal
-keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'switch to normal mode' })
+-- Exclude lazygit buffers so Esc is passed through to lazygit for dialog dismissal
+keymap.set('t', '<Esc>', function()
+  if vim.bo.filetype == 'lazygit' then
+    return '<Esc>'
+  else
+    return '<C-\\><C-n>'
+  end
+end, { expr = true, desc = 'switch to normal mode (passthrough in lazygit)' })
 keymap.set('t', '<C-Esc>', '<Esc>', { desc = 'send Esc to terminal' })
 
 -- Shortcut for expanding to current buffer's directory in command mode

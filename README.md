@@ -1,4 +1,4 @@
-<!-- markdownlint-disable -->
+> <!-- markdownlint-disable -->
 <br />
 <div align="center">
   <a href="https://github.com/nix-community/kickstart-nix.nvim">
@@ -330,3 +330,8 @@ you can run Neovim with `nvim-dev` to automatically reload your lua configuratio
 [issues-url]: https://github.com/nix-community/kickstart-nix.nvim/issues
 [license-shield]: https://img.shields.io/github/license/nix-community/kickstart-nix.nvim.svg?style=for-the-badge
 [license-url]: https://github.com/nix-community/kickstart-nix.nvim/blob/master/LICENSE
+
+
+
+
+

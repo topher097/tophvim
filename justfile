@@ -1,7 +1,7 @@
-run:
+run: gadd
     nix run .
 
-build:
+build: gadd
     nix build .
 
 # Update the kickstart-template branch from external template repo
