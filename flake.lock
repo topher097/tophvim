@@ -138,11 +138,11 @@
     "markdown-plus-nvim": {
       "flake": false,
       "locked": {
-        "lastModified": 1773664365,
-        "narHash": "sha256-wZ9rLS+InCVSkQK+NZ2OYBox1I3dYbAOoP8xOeVudr8=",
+        "lastModified": 1774299245,
+        "narHash": "sha256-lTBftuoryMIQmlaURzK98LVOPwqr4CX8Lpnwtm6jiXA=",
         "owner": "YousefHadder",
         "repo": "markdown-plus.nvim",
-        "rev": "070c12a2b9dc12a8ab3a9fdcb96f8e74b69bda32",
+        "rev": "877dcc3ba70da93d87cd9565f85efbb01978399b",
         "type": "github"
       },
       "original": {
@@ -197,11 +197,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1769170682,
-        "narHash": "sha256-oMmN1lVQU0F0W2k6OI3bgdzp2YOHWYUAw79qzDSjenU=",
+        "lastModified": 1774386573,
+        "narHash": "sha256-4hAV26quOxdC6iyG7kYaZcM3VOskcPUrdCQd/nx8obc=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "c5296fdd05cfa2c187990dd909864da9658df755",
+        "rev": "46db2e09e1d3f113a13c0d7b81e2f221c63b8ce9",
         "type": "github"
       },
       "original": {

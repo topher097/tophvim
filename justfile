@@ -4,6 +4,11 @@ run: gadd
 build: gadd
     nix build .
 
+update:
+    nix flake update
+    devbox update
+    just build
+
 # Update the kickstart-template branch from external template repo
 get-from-template-repo:
     git remote add template https://github.com/nix-community/kickstart-nix.nvim 2> /dev/null || :
