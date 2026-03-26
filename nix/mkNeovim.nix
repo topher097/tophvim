@@ -4,6 +4,7 @@
   stdenv,
   sqlite,
   git,
+  python3,
   neovim-unwrapped,
   # Set by the overlay to ensure we use a compatible version of `wrapNeovimUnstable`
   wrapNeovimUnstable,
@@ -48,10 +49,11 @@ with lib;
       # set to `true`, it is installed in the 'opt' packpath, and can be lazy loaded with
       # ':packadd! {plugin-name}
       optional = false;
-      runtime = {};
     };
 
     externalPackages = extraPackages ++ (optionals withSqlite [sqlite]);
+
+    resolvedExtraPython3Packages = extraPython3Packages python3.pkgs;
 
     # Map all plugins to an attrset { plugin = <plugin>; config = <config>; optional = <tf>; ... }
     normalizedPlugins = map (x:
@@ -172,6 +174,9 @@ with lib;
       # Set the LIBSQLITE environment variable if sqlite is enabled
       ++ (optional withSqlite
         ''--set LIBSQLITE "${sqliteLibPath}"'')
+      # Add extra Python3 packages to PYTHONPATH so subprocesses (e.g. ranger for rnvimr) can import them
+      ++ (optional (resolvedExtraPython3Packages != [])
+        ''--prefix PYTHONPATH : "${python3.pkgs.makePythonPath resolvedExtraPython3Packages}"'')
     );
 
     luaPackages = neovim-unwrapped.lua.pkgs;

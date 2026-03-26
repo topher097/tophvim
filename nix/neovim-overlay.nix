@@ -79,6 +79,7 @@ with final.pkgs.lib; let
     # Useful utilities
     nvim-unception # Prevent nested neovim sessions | nvim-unception
     auto-session # Session management | https://github.com/rmagatti/auto-session
+    rnvimr # Ranger integration | https://github.com/kevinhwang91/rnvimr
     # ^ Useful utilities
     # libraries that other plugins depend on
     sqlite-lua
@@ -97,6 +98,11 @@ with final.pkgs.lib; let
     lua-language-server
     nil # nix LSP
     lazygit
+    ranger
+    # ranger's scope.sh preview dependencies
+    file # MIME type detection
+    bat # syntax-highlighted text preview
+    ncurses # provides tput, needed by scope.sh
   ];
 
 in {
@@ -105,6 +111,7 @@ in {
   nvim-pkg = mkNeovim {
     plugins = all-plugins;
     inherit extraPackages;
+    extraPython3Packages = p: [ p.pynvim ];
   };
 
   # This is meant to be used within a devshell.
@@ -113,6 +120,7 @@ in {
   nvim-dev = mkNeovim {
     plugins = all-plugins;
     inherit extraPackages;
+    extraPython3Packages = p: [ p.pynvim ];
     appName = "nvim-dev";
     wrapRc = false;
   };
