@@ -62,8 +62,14 @@ vim.api.nvim_create_autocmd('LspAttach', {
     local bufnr = ev.buf
     local client = vim.lsp.get_client_by_id(ev.data.client_id)
 
+    if not client then
+      return
+    end
+
     -- Attach plugins
-    require('nvim-navic').attach(client, bufnr)
+    if client.server_capabilities.documentSymbolProvider then
+      require('nvim-navic').attach(client, bufnr)
+    end
 
     vim.cmd.setlocal('signcolumn=yes')
     vim.bo[bufnr].bufhidden = 'hide'
@@ -104,9 +110,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end
 
     -- Auto-refresh code lenses
-    if not client then
-      return
-    end
     local group = api.nvim_create_augroup(string.format('lsp-%s-%s', bufnr, client.id), {})
     if client.server_capabilities.codeLensProvider then
       vim.api.nvim_create_autocmd({ 'InsertLeave', 'BufWritePost', 'TextChanged' }, {
