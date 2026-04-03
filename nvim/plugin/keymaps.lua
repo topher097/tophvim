@@ -141,17 +141,39 @@ end, { expr = true, desc = "expand to current buffer's directory" })
 
 keymap.set('n', '<space>tn', vim.cmd.tabnew, { desc = '[t]ab: [n]ew' })
 keymap.set('n', '<space>tq', vim.cmd.tabclose, { desc = '[t]ab: [q]uit/close' })
+keymap.set('n', '<C-l>', '<Cmd>nohlsearch<CR><C-l>', { silent = true, desc = 'clear search highlight and redraw' })
 
 local severity = diagnostic.severity
 
-keymap.set('n', '<space>e', function()
-  local _, winid = diagnostic.open_float(nil, { scope = 'line' })
+local function open_focusable_diagnostic_float(opts)
+  local _, winid = diagnostic.open_float(nil, opts)
   if not winid then
     vim.notify('no diagnostics found', vim.log.levels.INFO)
     return
   end
-  vim.api.nvim_win_set_config(winid or 0, { focusable = true })
+  vim.api.nvim_win_set_config(winid, { focusable = true })
+end
+
+local function open_diagnostic_on_click()
+  vim.cmd.normal { args = { '<LeftMouse>' }, bang = true }
+  vim.schedule(function()
+    local line = api.nvim_win_get_cursor(0)[1] - 1
+    local line_diagnostics = diagnostic.get(0, { lnum = line })
+    if vim.tbl_isempty(line_diagnostics) then
+      return
+    end
+    open_focusable_diagnostic_float { scope = 'line' }
+  end)
+end
+
+keymap.set('n', '<space>e', function()
+  open_focusable_diagnostic_float { scope = 'line' }
 end, { noremap = true, silent = true, desc = 'diagnostics floating window' })
+keymap.set('n', '<LeftMouse>', open_diagnostic_on_click, {
+  noremap = true,
+  silent = true,
+  desc = 'diagnostics: click line to open',
+})
 keymap.set('n', '[d', diagnostic.goto_prev, { noremap = true, silent = true, desc = 'previous [d]iagnostic' })
 keymap.set('n', ']d', diagnostic.goto_next, { noremap = true, silent = true, desc = 'next [d]iagnostic' })
 keymap.set('n', '[e', function()

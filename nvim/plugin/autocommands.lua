@@ -24,6 +24,22 @@ api.nvim_create_autocmd('TermOpen', {
   end,
 })
 
+local diag_hover_group = api.nvim_create_augroup('diagnostic-hover-float', { clear = true })
+api.nvim_create_autocmd('CursorHold', {
+  group = diag_hover_group,
+  callback = function()
+    if vim.api.nvim_get_mode().mode ~= 'n' then
+      return
+    end
+    local opts = {
+      focusable = false,
+      scope = 'cursor',
+      close_events = { 'CursorMoved', 'CursorMovedI', 'BufHidden', 'InsertCharPre', 'WinLeave' },
+    }
+    vim.diagnostic.open_float(nil, opts)
+  end,
+})
+
 -- LSP
 local keymap = vim.keymap
 

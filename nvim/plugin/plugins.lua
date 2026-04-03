@@ -7,3 +7,12 @@ vim.g.did_load_plugins_plugin = true
 -- even with default configs
 
 require('nvim-surround').setup()
+
+vim.o.termguicolors = true
+
+require('rose-pine').setup {
+  variant = 'auto',
+  dark_variant = 'main',
+}
+
+vim.cmd.colorscheme('rose-pine')
