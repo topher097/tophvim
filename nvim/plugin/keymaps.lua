@@ -155,15 +155,39 @@ local function open_focusable_diagnostic_float(opts)
 end
 
 local function open_diagnostic_on_click()
-  vim.cmd.normal { args = { '<LeftMouse>' }, bang = true }
-  vim.schedule(function()
-    local line = api.nvim_win_get_cursor(0)[1] - 1
-    local line_diagnostics = diagnostic.get(0, { lnum = line })
-    if vim.tbl_isempty(line_diagnostics) then
-      return
-    end
-    open_focusable_diagnostic_float { scope = 'line' }
-  end)
+  local mouse = fn.getmousepos()
+  local winid = mouse.winid
+  if type(winid) ~= 'number' or winid == 0 or not api.nvim_win_is_valid(winid) then
+    return
+  end
+
+  local line = mouse.line or 0
+  local column = mouse.column or mouse.col or 0
+  -- Ignore clicks that did not land on buffer text (statusline, separators, etc.).
+  if line <= 0 or column <= 0 then
+    return
+  end
+
+  if api.nvim_get_current_win() ~= winid then
+    api.nvim_set_current_win(winid)
+  end
+
+  local bufnr = api.nvim_win_get_buf(winid)
+  local line_count = api.nvim_buf_line_count(bufnr)
+  if line > line_count then
+    return
+  end
+
+  local line_text = api.nvim_buf_get_lines(bufnr, line - 1, line, false)[1] or ''
+  local col = math.max(0, column - 1)
+  col = math.min(col, #line_text)
+  api.nvim_win_set_cursor(winid, { line, col })
+
+  local line_diagnostics = diagnostic.get(bufnr, { lnum = line - 1 })
+  if vim.tbl_isempty(line_diagnostics) then
+    return
+  end
+  open_focusable_diagnostic_float { scope = 'line' }
 end
 
 keymap.set('n', '<space>e', function()
