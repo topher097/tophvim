@@ -31,6 +31,8 @@ with final.pkgs.lib; let
   all-plugins = with pkgs.vimPlugins; [
     alpha-nvim
     amp-nvim
+    copilot-lua
+    opencode-nvim # https://github.com/nickjvandyke/opencode.nvim
     # plugins from nixpkgs go in here.
     # https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=vimPlugins
     nvim-treesitter.withAllGrammars
@@ -102,7 +104,10 @@ with final.pkgs.lib; let
     nil # nix LSP
     ruff # python linter/formatter language server (`ruff server`)
     ty # python type checker language server (`ty server`)
+    opencode # OpenCode CLI required by opencode.nvim
     lazygit
+    nodejs
+    curl
     # jupyter notebook support
     imagemagick # required by image.nvim
     (pkgs.python3.withPackages (ps: [ps.jupytext])) # jupytext CLI for jupytext.nvim

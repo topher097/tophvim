@@ -12,7 +12,8 @@
     "amp-cli@latest",
     "bump-my-version@latest",
     "tabiew@latest",
-    "glow@latest"
+    "glow@latest",
+    "opencode@latest"
   ],
   "shell": {
     "init_hook": [
