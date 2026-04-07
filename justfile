@@ -1,3 +1,7 @@
+ready-py:
+    uv lock
+    uv sync --locked
+
 run: gadd
     nix run .
 
@@ -16,9 +20,6 @@ get-from-template-repo:
     git branch kickstart-template 2> /dev/null || :
     git checkout kickstart-template
     git merge template/main --allow-unrelated-histories -X theirs
-
-# cachix-push:
-#     nix build --json | jq -r '.[].outputs | to_entries[].value' | cachix push topher097
 
 # bundle:
 #     nix bundle --bundler github:DavHau/nix-portable -o bundle
