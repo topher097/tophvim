@@ -13,6 +13,7 @@ with final.pkgs.lib; let
   # Make sure we use the pinned nixpkgs instance for wrapNeovimUnstable,
   # otherwise it could have an incompatible signature when applying this overlay.
   pkgs-locked = inputs.nixpkgs.legacyPackages.${pkgs.stdenv.hostPlatform.system};
+  locked-vim-plugins = pkgs-locked.vimPlugins;
 
   # This is the helper function that builds the Neovim derivation.
   mkNeovim = pkgs.callPackage ./mkNeovim.nix {
@@ -60,14 +61,14 @@ with final.pkgs.lib; let
     # language support
     nvim-lspconfig # https://github.com/neovim/nvim-lspconfig
     render-markdown-nvim # https://github.com/MeanderingProgrammer/render-markdown.nvim
-    quarto-nvim # https://github.com/quarto-dev/quarto-nvim
-    otter-nvim # https://github.com/jmbuhr/otter.nvim
+    locked-vim-plugins.quarto-nvim # https://github.com/quarto-dev/quarto-nvim
+    locked-vim-plugins.otter-nvim # https://github.com/jmbuhr/otter.nvim
     (mkNvimPlugin inputs.markdown-plus-nvim "markdown-plus.nvim") # https://github.com/YousefHadder/markdown-plus.nvim
     # ^ language support
     # jupyter notebook support
-    molten-nvim # https://github.com/benlubas/molten-nvim
-    image-nvim # https://github.com/3rd/image.nvim
-    jupytext-nvim # https://github.com/GCBallesteros/jupytext.nvim (ipynb <-> markdown conversion)
+    locked-vim-plugins.molten-nvim # https://github.com/benlubas/molten-nvim
+    locked-vim-plugins.image-nvim # https://github.com/3rd/image.nvim
+    locked-vim-plugins.jupytext-nvim # https://github.com/GCBallesteros/jupytext.nvim (ipynb <-> markdown conversion)
     # ^ jupyter notebook support
     # file manager
     rnvimr # https://github.com/kevinhwang91/rnvimr
@@ -123,6 +124,7 @@ in {
         plotly # optional: Plotly figure rendering
         kaleido # optional: required with plotly for image conversion
         pyperclip # optional: used by molten_copy_output
+        jupytext # allows python3_host_prog -m jupytext fallback for session restore
         ipykernel # provides the default Python jupyter kernel
       ];
   };
@@ -143,6 +145,7 @@ in {
         plotly
         kaleido
         pyperclip
+        jupytext
         ipykernel
       ];
     appName = "nvim-dev";

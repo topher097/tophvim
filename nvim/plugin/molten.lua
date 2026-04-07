@@ -17,7 +17,9 @@ vim.g.molten_show_mimetype_debug = true
 local keymap = vim.keymap
 
 local initialized_ipynb_buffers = {}
+local initializing_ipynb_buffers = {}
 local output_windows_enabled = true
+vim.g.molten_output_windows_enabled = true
 local output_toggle_group = vim.api.nvim_create_augroup('MoltenOutputToggle', { clear = true })
 
 local function set_auto_open_output(enabled)
@@ -36,14 +38,36 @@ local function enable_output_autoshow(enabled)
     return
   end
 
+  -- Use MoltenEnterOutput instead of MoltenShowOutput because
+  -- MoltenShowOutput is gated on `current_output` (the actively-running cell)
+  -- and skips cells whose output status is DONE. MoltenEnterOutput bypasses
+  -- the DONE guard entirely and reliably opens output for completed cells.
+  -- With the default enter_output_behavior ("open_then_enter"), the first call
+  -- opens the window without moving the cursor, but subsequent calls while the
+  -- window is already open will move the cursor INTO the float. We guard against
+  -- that by restoring focus to the code window if it was stolen.
   vim.api.nvim_create_autocmd({ 'CursorMoved', 'CursorMovedI' }, {
     group = output_toggle_group,
     callback = function()
-      vim.cmd('silent! MoltenShowOutput')
+      -- Skip if we're already in a floating window (e.g. a molten output float)
+      local cur_win = vim.api.nvim_get_current_win()
+      local cfg = vim.api.nvim_win_get_config(cur_win)
+      if cfg.relative and cfg.relative ~= '' then
+        return
+      end
+
+      vim.cmd('silent! noautocmd MoltenEnterOutput')
+
+      -- If MoltenEnterOutput moved the cursor into the output float
+      -- (happens when the float was already open), restore focus to the
+      -- code window so the user isn't trapped.
+      if vim.api.nvim_get_current_win() ~= cur_win then
+        vim.api.nvim_set_current_win(cur_win)
+      end
     end,
   })
 
-  vim.cmd('silent! MoltenShowOutput')
+  vim.cmd('silent! noautocmd MoltenEnterOutput')
 end
 
 local VENV_DIR_NAMES = { '.venv', 'venv' }
@@ -69,14 +93,6 @@ local function dedupe_paths(paths)
 end
 
 local function find_project_venv_python()
-  local env_venv = os.getenv('VIRTUAL_ENV') or os.getenv('CONDA_PREFIX')
-  if env_venv ~= nil and env_venv ~= '' then
-    local env_python = path_join(env_venv, 'bin', 'python')
-    if is_executable(env_python) then
-      return env_python
-    end
-  end
-
   local current_buffer = vim.api.nvim_buf_get_name(0)
   local roots = {
     vim.fn.getcwd(),
@@ -96,6 +112,14 @@ local function find_project_venv_python()
       if is_executable(python) then
         return python
       end
+    end
+  end
+
+  local env_venv = os.getenv('VIRTUAL_ENV') or os.getenv('CONDA_PREFIX')
+  if env_venv ~= nil and env_venv ~= '' then
+    local env_python = path_join(env_venv, 'bin', 'python')
+    if is_executable(env_python) then
+      return env_python
     end
   end
 
@@ -174,18 +198,35 @@ local function ensure_python_kernel(python_path, kernel_name)
 end
 
 local function maybe_init_notebook_buffer(event)
-  vim.schedule(function()
-    local bufnr = event and event.buf or vim.api.nvim_get_current_buf()
-    if bufnr == nil then
-      return
-    end
+  local bufnr = event and event.buf or vim.api.nvim_get_current_buf()
+  if bufnr == nil then
+    return
+  end
 
-    if initialized_ipynb_buffers[bufnr] then
+  if initialized_ipynb_buffers[bufnr] or initializing_ipynb_buffers[bufnr] then
+    return
+  end
+
+  initializing_ipynb_buffers[bufnr] = true
+
+  vim.schedule(function()
+    if not vim.api.nvim_buf_is_valid(bufnr) then
+      initializing_ipynb_buffers[bufnr] = nil
       return
     end
 
     local kernels = molten_available_kernels()
     if kernels == nil then
+      initializing_ipynb_buffers[bufnr] = nil
+      return
+    end
+
+    local attached = vim.api.nvim_buf_call(bufnr, function()
+      return vim.fn.MoltenStatusLineKernels(true)
+    end)
+    if type(attached) == 'string' and attached ~= '' then
+      initialized_ipynb_buffers[bufnr] = true
+      initializing_ipynb_buffers[bufnr] = nil
       return
     end
 
@@ -215,16 +256,30 @@ local function maybe_init_notebook_buffer(event)
     end
 
     if kernel_name ~= nil then
-      vim.cmd(('MoltenInit %s'):format(kernel_name))
+      vim.api.nvim_buf_call(bufnr, function()
+        vim.cmd(('MoltenInit %s'):format(kernel_name))
+      end)
     end
 
     initialized_ipynb_buffers[bufnr] = true
-    vim.cmd('MoltenImportOutput')
+    initializing_ipynb_buffers[bufnr] = nil
+    vim.api.nvim_buf_call(bufnr, function()
+      vim.cmd('MoltenImportOutput')
+    end)
   end)
+end
+
+local function current_buffer_has_active_kernel()
+  local active = vim.fn.MoltenStatusLineKernels(true)
+  return type(active) == 'string' and active ~= ''
 end
 
 -- Initialize kernel
 keymap.set('n', '<leader>ji', function()
+  if require('molten.status').initialized() == 'Molten' and current_buffer_has_active_kernel() then
+    vim.cmd('MoltenDeinit')
+  end
+
   local python = find_project_venv_python()
   if python == nil then
     vim.cmd('MoltenInit')
@@ -253,6 +308,7 @@ vim.api.nvim_create_autocmd('BufUnload', {
   group = molten_notebook_group,
   callback = function(event)
     initialized_ipynb_buffers[event.buf] = nil
+    initializing_ipynb_buffers[event.buf] = nil
   end,
 })
 
@@ -292,6 +348,7 @@ keymap.set(
 )
 keymap.set('n', '<leader>jh', function()
   output_windows_enabled = not output_windows_enabled
+  vim.g.molten_output_windows_enabled = output_windows_enabled
   set_auto_open_output(output_windows_enabled)
   enable_output_autoshow(output_windows_enabled)
 end, { silent = true, desc = '[j]upyter toggle [h]ide/show output windows' })

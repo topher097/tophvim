@@ -34,6 +34,23 @@ require('lualine').setup {
       -- nvim-navic
       { navic.get_location, cond = navic.is_available },
     },
+    lualine_y = {
+      {
+        function()
+          if vim.g.molten_output_windows_enabled then
+            return '󰯂 output:auto'
+          else
+            return '󰯂 output:manual'
+          end
+        end,
+        cond = function()
+          local ok, status = pcall(function()
+            return require('molten.status').initialized()
+          end)
+          return ok and status == 'Molten'
+        end,
+      },
+    },
     lualine_z = {
       -- (see above)
       { extra_mode_status },
