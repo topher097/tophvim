@@ -6,7 +6,8 @@ local opt = vim.o
 -- <leader> key. Defaults to `\`. Some people prefer space.
 -- The default leader is '\'. Some people prefer <space>. Uncomment this if you do, too.
 vim.g.mapleader = ' '
--- vim.g.maplocalleader = ' '
+vim.g.maplocalleader = ' '
+vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
 -- See :h <option> to see what the options do
 

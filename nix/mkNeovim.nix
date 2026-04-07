@@ -202,6 +202,8 @@ with lib;
       });
 
     isCustomAppName = appName != null && appName != "nvim";
+
+    nvimBinName = if isCustomAppName then appName else "nvim";
   in
     neovim-wrapped.overrideAttrs (oa: {
       buildPhase =
@@ -209,6 +211,20 @@ with lib;
         # If a custom NVIM_APPNAME has been set, rename the `nvim` binary
         + lib.optionalString isCustomAppName ''
           mv $out/bin/nvim $out/bin/${lib.escapeShellArg appName}
+        ''
+        # Generate the remote plugin manifest (rplugin.vim) at build time.
+        # The wrapper's postBuild leaves rplugin.vim empty; we re-run
+        # :UpdateRemotePlugins so that remote plugins like molten-nvim work
+        # without the user having to run the command manually.
+        + ''
+          echo "Generating remote plugin manifest for ${nvimBinName}..."
+          export HOME="$(mktemp -d)"
+          export NVIM_RPLUGIN_MANIFEST=$out/rplugin.vim
+          if ! $out/bin/${lib.escapeShellArg nvimBinName} \
+            -i NONE -n --headless \
+            +UpdateRemotePlugins +quit! > /dev/null 2>&1; then
+            echo "Warning: UpdateRemotePlugins failed (non-fatal)"
+          fi
         '';
       meta.mainProgram 
         = if isCustomAppName 

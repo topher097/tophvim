@@ -58,9 +58,17 @@ with final.pkgs.lib; let
     nvim-treesitter-context # nvim-treesitter-context
     # ^ UI
     # language support
+    nvim-lspconfig # https://github.com/neovim/nvim-lspconfig
     render-markdown-nvim # https://github.com/MeanderingProgrammer/render-markdown.nvim
+    quarto-nvim # https://github.com/quarto-dev/quarto-nvim
+    otter-nvim # https://github.com/jmbuhr/otter.nvim
     (mkNvimPlugin inputs.markdown-plus-nvim "markdown-plus.nvim") # https://github.com/YousefHadder/markdown-plus.nvim
     # ^ language support
+    # jupyter notebook support
+    molten-nvim # https://github.com/benlubas/molten-nvim
+    image-nvim # https://github.com/3rd/image.nvim
+    jupytext-nvim # https://github.com/GCBallesteros/jupytext.nvim (ipynb <-> markdown conversion)
+    # ^ jupyter notebook support
     # file manager
     rnvimr # https://github.com/kevinhwang91/rnvimr
     # ^ file manager
@@ -94,6 +102,9 @@ with final.pkgs.lib; let
     ruff # python linter/formatter language server (`ruff server`)
     ty # python type checker language server (`ty server`)
     lazygit
+    # jupyter notebook support
+    imagemagick # required by image.nvim
+    (pkgs.python3.withPackages (ps: [ps.jupytext])) # jupytext CLI for jupytext.nvim
   ];
 
 in {
@@ -102,6 +113,18 @@ in {
   nvim-pkg = mkNeovim {
     plugins = all-plugins;
     inherit extraPackages;
+    extraLuaPackages = p: [p.magick]; # required by image.nvim
+    extraPython3Packages = p:
+      with p; [
+        pynvim # required by molten-nvim (remote plugin API)
+        jupyter-client # required by molten-nvim (jupyter kernel interaction)
+        nbformat # required by molten-nvim (import/export notebook outputs)
+        cairosvg # optional: SVG image rendering with transparency
+        plotly # optional: Plotly figure rendering
+        kaleido # optional: required with plotly for image conversion
+        pyperclip # optional: used by molten_copy_output
+        ipykernel # provides the default Python jupyter kernel
+      ];
   };
 
   # This is meant to be used within a devshell.
@@ -110,6 +133,18 @@ in {
   nvim-dev = mkNeovim {
     plugins = all-plugins;
     inherit extraPackages;
+    extraLuaPackages = p: [p.magick];
+    extraPython3Packages = p:
+      with p; [
+        pynvim
+        jupyter-client
+        nbformat
+        cairosvg
+        plotly
+        kaleido
+        pyperclip
+        ipykernel
+      ];
     appName = "nvim-dev";
     wrapRc = false;
   };

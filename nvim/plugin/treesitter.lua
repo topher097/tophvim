@@ -64,6 +64,14 @@ vim.keymap.set({ 'n', 'x', 'o' }, '[P', function()
 end, { desc = 'previous [P]arameter (end)' })
 
 
+-- code cell text objects (for jupyter notebook / markdown code blocks)
+vim.keymap.set({ 'x', 'o' }, 'ib', function()
+  require('nvim-treesitter-textobjects.select').select_textobject('@code_cell.inner', 'textobjects')
+end, { desc = 'inside code [b]lock' })
+vim.keymap.set({ 'x', 'o' }, 'ab', function()
+  require('nvim-treesitter-textobjects.select').select_textobject('@code_cell.outer', 'textobjects')
+end, { desc = 'around code [b]lock' })
+
 require('treesitter-context').setup {
   max_lines = 3,
 }

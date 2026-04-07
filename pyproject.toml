@@ -9,6 +9,10 @@ dependencies = [
     "ipywidgets>=8.1.8",
     "jupyter>=1.1.1",
     "jupytext>=1.19.1",
+    "kaleido>=1.1.0",
+    "numpy>=2.4.4",
+    "pandas>=3.0.2",
+    "plotly>=6.6.0",
 ]
 
 [tool.bumpversion]
@@ -55,4 +59,3 @@ build-backend = "hatchling.build"
 
 [tool.hatch.build.targets.wheel]
 packages = ["."]
-
