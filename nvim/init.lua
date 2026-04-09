@@ -9,6 +9,9 @@ vim.g.mapleader = ' '
 vim.g.maplocalleader = ' '
 vim.keymap.set({ 'n', 'v' }, '<Space>', '<Nop>', { silent = true })
 
+-- We'll bind nvim-surround visual mappings ourselves to avoid conflicts.
+vim.g.nvim_surround_no_visual_mappings = true
+
 -- See :h <option> to see what the options do
 
 -- Search down into subfolders

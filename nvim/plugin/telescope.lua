@@ -102,6 +102,7 @@ vim.keymap.set(
   { desc = '[t]elescope current [b]uffer [f]uzzy find' }
 )
 vim.keymap.set('n', '<leader>td', builtin.lsp_document_symbols, { desc = '[t]elescope lsp [d]ocument symbols' })
+vim.keymap.set('n', '<leader>ts', builtin.lsp_document_symbols, { desc = '[t]elescope lsp document [s]ymbols' })
 vim.keymap.set(
   'n',
   '<leader>to',
