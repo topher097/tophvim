@@ -139,7 +139,10 @@ require('auto-session').setup {
       local session_path = find_session_file_path(session_name)
       local removed = prune_missing_paths_from_session(session_path)
       if removed > 0 then
-        vim.notify(('auto-session: skipped %d missing files while restoring %s'):format(removed, session_name), vim.log.levels.INFO)
+        vim.notify(
+          ('auto-session: skipped %d missing files while restoring %s'):format(removed, session_name),
+          vim.log.levels.INFO
+        )
       end
 
       return true

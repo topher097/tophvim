@@ -8,7 +8,7 @@ local function shell_unescape(token)
     return nil
   end
 
-  local value = vim.fn.system({ 'sh', '-lc', 'printf %s ' .. token })
+  local value = vim.fn.system { 'sh', '-lc', 'printf %s ' .. token }
   if vim.v.shell_error ~= 0 then
     return nil
   end
@@ -148,10 +148,7 @@ if ok_commands and type(jupytext_commands.run_jupytext_command) == 'function' th
 
     if options['--to'] ~= nil and options['--output'] ~= nil and options['--update'] == nil then
       if fallback_markdown_from_ipynb(input_file, options['--output']) then
-        vim.notify(
-          'jupytext failed; used notebook metadata fallback conversion for this open.',
-          vim.log.levels.WARN
-        )
+        vim.notify('jupytext failed; used notebook metadata fallback conversion for this open.', vim.log.levels.WARN)
         return
       end
     end

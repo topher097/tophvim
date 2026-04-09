@@ -9,9 +9,7 @@ vim.g.did_load_quarto_plugin = true
 pcall(require, 'otter.config')
 
 local function to_python_single_quoted_string(text)
-  return "'"
-    .. text:gsub('\\', '\\\\'):gsub('\r', '\\r'):gsub('\n', '\\n'):gsub("'", "\\'")
-    .. "'"
+  return "'" .. text:gsub('\\', '\\\\'):gsub('\r', '\\r'):gsub('\n', '\\n'):gsub("'", "\\'") .. "'"
 end
 
 local function molten_namespace()
@@ -48,8 +46,7 @@ local function run_bash_cell(cell)
     return
   end
   -- Run bash through the project's direnv env when available.
-  local use_direnv = vim.fn.executable('direnv') == 1
-    and vim.uv.fs_stat(vim.fn.getcwd() .. '/.envrc') ~= nil
+  local use_direnv = vim.fn.executable('direnv') == 1 and vim.uv.fs_stat(vim.fn.getcwd() .. '/.envrc') ~= nil
 
   local bash_lines = {}
   if use_direnv then
@@ -72,9 +69,9 @@ local function run_bash_cell(cell)
     local ns = molten_namespace()
     local marks_before = plain_molten_extmarks(bufnr, ns)
     local script = table.concat(bash_lines, '\n')
-    local python_payload = (
-      "import subprocess; subprocess.run(['/usr/bin/env', 'bash', '-lc', %s], check=False)"
-    ):format(to_python_single_quoted_string(script))
+    local python_payload = ("import subprocess; subprocess.run(['/usr/bin/env', 'bash', '-lc', %s], check=False)"):format(
+      to_python_single_quoted_string(script)
+    )
     local payload_lines = { python_payload }
     for _ = 2, #original_lines do
       table.insert(payload_lines, '')
@@ -94,10 +91,14 @@ local function run_bash_cell(cell)
       end
     end
 
-    local ok_restore, restore_err = pcall(vim.api.nvim_buf_set_lines, bufnr, start_line, end_line, false, original_lines)
+    local ok_restore, restore_err =
+      pcall(vim.api.nvim_buf_set_lines, bufnr, start_line, end_line, false, original_lines)
 
     if not ok_restore then
-      vim.notify(('Quarto bash runner failed to restore cell text: %s'):format(tostring(restore_err)), vim.log.levels.ERROR)
+      vim.notify(
+        ('Quarto bash runner failed to restore cell text: %s'):format(tostring(restore_err)),
+        vim.log.levels.ERROR
+      )
     end
 
     if ns ~= nil and ok_restore then
