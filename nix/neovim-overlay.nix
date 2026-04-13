@@ -76,6 +76,7 @@ with final.pkgs.lib; let
     rnvimr # https://github.com/kevinhwang91/rnvimr
     # ^ file manager
     # navigation/editing enhancement plugins
+    vim-eunuch # UNIX shell command helpers | https://github.com/tpope/vim-eunuch
     vim-unimpaired # predefined ] and [ navigation keymaps | https://github.com/tpope/vim-unimpaired/
     eyeliner-nvim # Highlights unique characters for f/F and t/T motions | https://github.com/jinh0/eyeliner.nvim
     flash-nvim # Enhanced jump/search motions | https://github.com/folke/flash.nvim
