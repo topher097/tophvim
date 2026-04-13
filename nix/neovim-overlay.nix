@@ -54,7 +54,7 @@ with final.pkgs.lib; let
     # ^ telescope and extensions
     # UI
     rose-pine # https://github.com/rose-pine/neovim
-    nvim-tree-lua # File explorer | https://github.com/nvim-tree/nvim-tree.lua
+    # nvim-tree-lua # File explorer | https://github.com/nvim-tree/nvim-tree.lua
     lualine-nvim # Status line | https://github.com/nvim-lualine/lualine.nvim/
     nvim-navic # Add LSP location to lualine | https://github.com/SmiteshP/nvim-navic
     statuscol-nvim # Status column | https://github.com/luukvbaal/statuscol.nvim/
@@ -66,6 +66,7 @@ with final.pkgs.lib; let
     locked-vim-plugins.quarto-nvim # https://github.com/quarto-dev/quarto-nvim
     locked-vim-plugins.otter-nvim # https://github.com/jmbuhr/otter.nvim
     (mkNvimPlugin inputs.markdown-plus-nvim "markdown-plus.nvim") # https://github.com/YousefHadder/markdown-plus.nvim
+    (mkNvimPlugin inputs.fm-nvim "fm-nvim") # https://github.com/is0n/fm-nvim
     # ^ language support
     # jupyter notebook support
     locked-vim-plugins.molten-nvim # https://github.com/benlubas/molten-nvim
