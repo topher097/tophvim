@@ -98,6 +98,10 @@ with final.pkgs.lib; let
     nvim-web-devicons
     vim-repeat
     # ^ libraries that other plugins depend on
+    # multicursor support
+    multicursors-nvim # https://github.com/smoka7/multicursors.nvim
+    hydra-nvim # dependency of multicursors.nvim | https://github.com/nvimtools/hydra.nvim
+    # ^ multicursor support
     # bleeding-edge plugins from flake inputs
     # (mkNvimPlugin inputs.wf-nvim "wf.nvim") # (example) keymap hints | https://github.com/Cassin01/wf.nvim
     # ^ bleeding-edge plugins from flake inputs
