@@ -157,9 +157,24 @@ local function has_kernel(kernels, kernel_name)
   return kernels ~= nil and vim.tbl_contains(kernels, kernel_name)
 end
 
-local function ensure_python_kernel(python_path, kernel_name)
+local MAX_INIT_RETRIES = 3
+local init_retries = {}
+
+local function kernel_is_installed_on_disk(kernel_name)
+  local path = vim.fn.expand('~/.local/share/jupyter/kernels/' .. kernel_name .. '/kernel.json')
+  return vim.fn.filereadable(path) == 1
+end
+
+local function kernel_is_available(kernel_name)
   local kernels = molten_available_kernels()
-  if has_kernel(kernels, kernel_name) then
+  if kernels ~= nil then
+    return has_kernel(kernels, kernel_name)
+  end
+  return kernel_is_installed_on_disk(kernel_name)
+end
+
+local function ensure_python_kernel(python_path, kernel_name)
+  if kernel_is_available(kernel_name) then
     return true
   end
 
@@ -183,13 +198,21 @@ local function ensure_python_kernel(python_path, kernel_name)
     return false
   end
 
-  kernels = molten_available_kernels()
-  if has_kernel(kernels, kernel_name) then
+  local install_path = out:match('Installed kernelspec.-%sin%s+(%S+)')
+  if install_path and vim.fn.filereadable(install_path .. '/kernel.json') == 1 then
+    return true
+  end
+
+  if kernel_is_installed_on_disk(kernel_name) then
+    return true
+  end
+
+  if kernel_is_available(kernel_name) then
     return true
   end
 
   vim.notify(
-    ('Molten: installed kernel %s, but it is still not visible to Molten. Run :checkhealth molten and verify Jupyter paths.'):format(
+    ('Molten: installed kernel %s, but it is still not visible. Run :checkhealth molten and verify Jupyter paths.'):format(
       kernel_name
     ),
     vim.log.levels.WARN
@@ -207,16 +230,15 @@ local function maybe_init_notebook_buffer(event)
     return
   end
 
+  init_retries[bufnr] = (init_retries[bufnr] or 0) + 1
+  if init_retries[bufnr] > MAX_INIT_RETRIES then
+    return
+  end
+
   initializing_ipynb_buffers[bufnr] = true
 
   vim.schedule(function()
     if not vim.api.nvim_buf_is_valid(bufnr) then
-      initializing_ipynb_buffers[bufnr] = nil
-      return
-    end
-
-    local kernels = molten_available_kernels()
-    if kernels == nil then
       initializing_ipynb_buffers[bufnr] = nil
       return
     end
@@ -238,7 +260,7 @@ local function maybe_init_notebook_buffer(event)
         local ok_notebook, notebook = pcall(vim.json.decode, table.concat(lines, '\n'))
         if ok_notebook and notebook and notebook.metadata and notebook.metadata.kernelspec then
           local notebook_kernel = notebook.metadata.kernelspec.name
-          if type(notebook_kernel) == 'string' and notebook_kernel ~= '' and has_kernel(kernels, notebook_kernel) then
+          if type(notebook_kernel) == 'string' and notebook_kernel ~= '' and kernel_is_available(notebook_kernel) then
             kernel_name = notebook_kernel
           end
         end
@@ -259,13 +281,13 @@ local function maybe_init_notebook_buffer(event)
       vim.api.nvim_buf_call(bufnr, function()
         vim.cmd(('MoltenInit %s'):format(kernel_name))
       end)
+      initialized_ipynb_buffers[bufnr] = true
+      vim.api.nvim_buf_call(bufnr, function()
+        vim.cmd('MoltenImportOutput')
+      end)
     end
 
-    initialized_ipynb_buffers[bufnr] = true
     initializing_ipynb_buffers[bufnr] = nil
-    vim.api.nvim_buf_call(bufnr, function()
-      vim.cmd('MoltenImportOutput')
-    end)
   end)
 end
 
@@ -309,6 +331,7 @@ vim.api.nvim_create_autocmd('BufUnload', {
   callback = function(event)
     initialized_ipynb_buffers[event.buf] = nil
     initializing_ipynb_buffers[event.buf] = nil
+    init_retries[event.buf] = nil
   end,
 })
 

@@ -1,0 +1,20 @@
+Fix: wrap DynamicPosition.__del__ in nvim.async_call to avoid
+"Request from non-main thread" error when GC runs on a non-main thread
+(e.g. during Jupyter kernel I/O operations).
+
+--- a/rplugin/python3/molten/position.py
++++ b/rplugin/python3/molten/position.py
+@@ -58,7 +58,12 @@
+ 
+     def __del__(self) -> None:
+         # Note, this will not fail if the extmark doesn't exist
+-        self.nvim.funcs.nvim_buf_del_extmark(self.bufno, self.extmark_namespace, self.extmark_id)
++        try:
++            self.nvim.async_call(
++                self.nvim.funcs.nvim_buf_del_extmark, self.bufno, self.extmark_namespace, self.extmark_id
++            )
++        except Exception:
++            pass
+ 
+     def __str__(self) -> str:
+         return f"DynamicPosition({self.bufno}, {self.lineno}, {self.colno})"

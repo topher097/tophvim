@@ -69,7 +69,9 @@ with final.pkgs.lib; let
     (mkNvimPlugin inputs.fm-nvim "fm-nvim") # https://github.com/is0n/fm-nvim
     # ^ language support
     # jupyter notebook support
-    locked-vim-plugins.molten-nvim # https://github.com/benlubas/molten-nvim
+    (locked-vim-plugins.molten-nvim.overrideAttrs (old: {
+      patches = (old.patches or []) ++ [ ./patches/molten-nvim-fix-thread-safety.patch ];
+    })) # https://github.com/benlubas/molten-nvim
     locked-vim-plugins.image-nvim # https://github.com/3rd/image.nvim
     locked-vim-plugins.jupytext-nvim # https://github.com/GCBallesteros/jupytext.nvim (ipynb <-> markdown conversion)
     # ^ jupyter notebook support
