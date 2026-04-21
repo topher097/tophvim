@@ -117,6 +117,7 @@ with final.pkgs.lib; let
     ruff # python linter/formatter language server (`ruff server`)
     ty # python type checker language server (`ty server`)
     opencode # OpenCode CLI required by opencode.nvim
+    dockerfile-language-server
     lazygit
     nodejs
     curl
