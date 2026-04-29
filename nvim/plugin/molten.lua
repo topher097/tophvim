@@ -22,6 +22,16 @@ local output_windows_enabled = true
 vim.g.molten_output_windows_enabled = true
 local output_toggle_group = vim.api.nvim_create_augroup('MoltenOutputToggle', { clear = true })
 
+local function get_buf_attached_kernels(bufnr)
+  local ok, result = pcall(vim.api.nvim_buf_call, bufnr, function()
+    return vim.fn.MoltenStatusLineKernels(true)
+  end)
+  if not ok then
+    return nil
+  end
+  return result
+end
+
 local function set_auto_open_output(enabled)
   if require('molten.status').initialized() == 'Molten' then
     vim.fn.MoltenUpdateOption('auto_open_output', enabled)
@@ -243,9 +253,7 @@ local function maybe_init_notebook_buffer(event)
       return
     end
 
-    local attached = vim.api.nvim_buf_call(bufnr, function()
-      return vim.fn.MoltenStatusLineKernels(true)
-    end)
+    local attached = get_buf_attached_kernels(bufnr)
     if type(attached) == 'string' and attached ~= '' then
       initialized_ipynb_buffers[bufnr] = true
       initializing_ipynb_buffers[bufnr] = nil
@@ -292,8 +300,8 @@ local function maybe_init_notebook_buffer(event)
 end
 
 local function current_buffer_has_active_kernel()
-  local active = vim.fn.MoltenStatusLineKernels(true)
-  return type(active) == 'string' and active ~= ''
+  local ok, active = pcall(vim.fn.MoltenStatusLineKernels, true)
+  return ok and type(active) == 'string' and active ~= ''
 end
 
 -- Initialize kernel

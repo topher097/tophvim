@@ -83,6 +83,7 @@ with final.pkgs.lib; let
     vim-unimpaired # predefined ] and [ navigation keymaps | https://github.com/tpope/vim-unimpaired/
     eyeliner-nvim # Highlights unique characters for f/F and t/T motions | https://github.com/jinh0/eyeliner.nvim
     flash-nvim # Enhanced jump/search motions | https://github.com/folke/flash.nvim
+    smart-splits-nvim # Seamless nav/resizing with multiplexer (zellij) | https://github.com/mrjones2014/smart-splits.nvim
     nvim-surround # https://github.com/kylechui/nvim-surround/
     nvim-treesitter-textobjects # https://github.com/nvim-treesitter/nvim-treesitter-textobjects/
     nvim-ts-context-commentstring # https://github.com/joosepalviste/nvim-ts-context-commentstring/

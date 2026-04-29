@@ -144,7 +144,7 @@ keymap.set('x', 'gS', '<Plug>(nvim-surround-visual-line)', { desc = 'surround se
 
 keymap.set('n', '<space>tn', vim.cmd.tabnew, { desc = '[t]ab: [n]ew' })
 keymap.set('n', '<space>tq', vim.cmd.tabclose, { desc = '[t]ab: [q]uit/close' })
-keymap.set('n', '<C-l>', '<Cmd>nohlsearch<CR><C-l>', { silent = true, desc = 'clear search highlight and redraw' })
+keymap.set('n', '<Esc>', '<Cmd>nohlsearch<CR>', { silent = true, desc = 'clear search highlight' })
 
 local severity = diagnostic.severity
 
