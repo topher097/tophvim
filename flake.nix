@@ -20,6 +20,14 @@
       url = "github:is0n/fm-nvim";
       flake = false;
     };
+    tide-nvim = {
+      url = "github:jackMort/tide.nvim";
+      flake = false;
+    };
+    nui-nvim = {
+      url = "github:MunifTanjim/nui.nvim";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {

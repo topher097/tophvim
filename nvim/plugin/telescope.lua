@@ -89,6 +89,7 @@ vim.keymap.set('n', '<leader>tc', builtin.quickfix, { desc = '[t]elescope quickf
 vim.keymap.set('n', '<leader>tq', builtin.command_history, { desc = '[t]elescope command history [q]' })
 vim.keymap.set('n', '<leader>tl', builtin.loclist, { desc = '[t]elescope [l]oclist' })
 vim.keymap.set('n', '<leader>tr', builtin.registers, { desc = '[t]elescope [r]egisters' })
+vim.keymap.set('n', '<leader>tw', builtin.keymaps, { desc = '[t]elescope keymaps [w]hich-key' })
 vim.keymap.set('n', '<leader>tt', function()
   builtin.colorscheme {
     enable_preview = true,

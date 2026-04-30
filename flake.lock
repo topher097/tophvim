@@ -227,13 +227,31 @@
         "type": "github"
       }
     },
+    "nui-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1749392788,
+        "narHash": "sha256-41slmnvt1z7sCxvpiVuFmQ9g7eCaxQi1dDCL3AxSL1A=",
+        "owner": "MunifTanjim",
+        "repo": "nui.nvim",
+        "rev": "de740991c12411b663994b2860f1a4fd0937c130",
+        "type": "github"
+      },
+      "original": {
+        "owner": "MunifTanjim",
+        "repo": "nui.nvim",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
         "fm-nvim": "fm-nvim",
         "gen-luarc": "gen-luarc",
         "markdown-plus-nvim": "markdown-plus-nvim",
-        "nixpkgs": "nixpkgs_2"
+        "nixpkgs": "nixpkgs_2",
+        "nui-nvim": "nui-nvim",
+        "tide-nvim": "tide-nvim"
       }
     },
     "systems": {
@@ -248,6 +266,22 @@
       "original": {
         "owner": "nix-systems",
         "repo": "default",
+        "type": "github"
+      }
+    },
+    "tide-nvim": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1731237293,
+        "narHash": "sha256-eHB1XHDh/fTCOZkA0twufFZdpR/pYqug/QKLD/+SPPs=",
+        "owner": "jackMort",
+        "repo": "tide.nvim",
+        "rev": "d76fe37dd8ad4f952bdac7afc573d9838fc2124d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "jackMort",
+        "repo": "tide.nvim",
         "type": "github"
       }
     }

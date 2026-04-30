@@ -230,6 +230,17 @@ local function ensure_python_kernel(python_path, kernel_name)
   return false
 end
 
+local function is_jupytext_markdown_notebook(path)
+  if path == nil or path == '' then
+    return false
+  end
+  local ok_lines, lines = pcall(vim.fn.readfile, path)
+  if not ok_lines or #lines == 0 then
+    return false
+  end
+  return lines[1]:match('^%-%-%-') ~= nil
+end
+
 local function maybe_init_notebook_buffer(event)
   local bufnr = event and event.buf or vim.api.nvim_get_current_buf()
   if bufnr == nil then
@@ -262,7 +273,8 @@ local function maybe_init_notebook_buffer(event)
 
     local kernel_name = nil
     local path = event and event.file or vim.api.nvim_buf_get_name(0)
-    if path ~= nil and path ~= '' then
+    local jupytext_notebook = is_jupytext_markdown_notebook(path)
+    if path ~= nil and path ~= '' and not jupytext_notebook then
       local ok_lines, lines = pcall(vim.fn.readfile, path)
       if ok_lines then
         local ok_notebook, notebook = pcall(vim.json.decode, table.concat(lines, '\n'))
@@ -290,9 +302,11 @@ local function maybe_init_notebook_buffer(event)
         vim.cmd(('MoltenInit %s'):format(kernel_name))
       end)
       initialized_ipynb_buffers[bufnr] = true
-      vim.api.nvim_buf_call(bufnr, function()
-        vim.cmd('MoltenImportOutput')
-      end)
+      if not jupytext_notebook then
+        vim.api.nvim_buf_call(bufnr, function()
+          vim.cmd('MoltenImportOutput')
+        end)
+      end
     end
 
     initializing_ipynb_buffers[bufnr] = nil
@@ -369,6 +383,15 @@ keymap.set(
   ':<C-u>MoltenEvaluateVisual<CR>gv',
   { silent = true, desc = '[j]upyter run [v]isual selection' }
 )
+
+-- Kernel restart
+keymap.set('n', '<leader>jK', function()
+  if require('molten.status').initialized() ~= 'Molten' then
+    vim.notify('No active kernel', vim.log.levels.ERROR)
+    return
+  end
+  vim.cmd('MoltenRestart')
+end, { silent = true, desc = '[j]upyter restart [K]ernel' })
 
 -- Output management
 keymap.set(

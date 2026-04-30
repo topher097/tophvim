@@ -108,7 +108,10 @@ with final.pkgs.lib; let
     # bleeding-edge plugins from flake inputs
     # (mkNvimPlugin inputs.wf-nvim "wf.nvim") # (example) keymap hints | https://github.com/Cassin01/wf.nvim
     # ^ bleeding-edge plugins from flake inputs
+    ((mkNvimPlugin inputs.tide-nvim "tide.nvim").overrideAttrs { doCheck = false; }) # https://github.com/jackMort/tide.nvim
+    (mkNvimPlugin inputs.nui-nvim "nui.nvim") # https://github.com/MunifTanjim/nui.nvim (tide dependency)
     which-key-nvim
+    toggleterm-nvim # https://github.com/akinsho/toggleterm.nvim
   ];
 
   extraPackages = with pkgs; [
