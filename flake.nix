@@ -28,6 +28,10 @@
       url = "github:MunifTanjim/nui.nvim";
       flake = false;
     };
+    nvim-pasta = {
+      url = "github:hrsh7th/nvim-pasta";
+      flake = false;
+    };
   };
 
   outputs = inputs @ {

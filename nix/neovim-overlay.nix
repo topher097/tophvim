@@ -110,6 +110,7 @@ with final.pkgs.lib; let
     # ^ bleeding-edge plugins from flake inputs
     ((mkNvimPlugin inputs.tide-nvim "tide.nvim").overrideAttrs { doCheck = false; }) # https://github.com/jackMort/tide.nvim
     (mkNvimPlugin inputs.nui-nvim "nui.nvim") # https://github.com/MunifTanjim/nui.nvim (tide dependency)
+    ((mkNvimPlugin inputs.nvim-pasta "nvim-pasta").overrideAttrs { doCheck = false; }) # https://github.com/hrsh7th/nvim-pasta
     which-key-nvim
     toggleterm-nvim # https://github.com/akinsho/toggleterm.nvim
   ];

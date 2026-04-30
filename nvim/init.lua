@@ -35,6 +35,7 @@ opt.shiftwidth = 2
 opt.foldenable = true
 opt.history = 2000
 opt.nrformats = 'bin,hex' -- 'octal'
+opt.clipboard = 'unnamedplus'
 opt.undofile = true
 opt.splitright = true
 opt.splitbelow = true

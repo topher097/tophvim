@@ -243,6 +243,22 @@
         "type": "github"
       }
     },
+    "nvim-pasta": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1729729304,
+        "narHash": "sha256-5/qdoPqKbwQ47CPkoqk424gxbWSne5LlDqw1zbMyb/8=",
+        "owner": "hrsh7th",
+        "repo": "nvim-pasta",
+        "rev": "7cc66bcf7101e40a6184b46a37eff0d5a43bde8d",
+        "type": "github"
+      },
+      "original": {
+        "owner": "hrsh7th",
+        "repo": "nvim-pasta",
+        "type": "github"
+      }
+    },
     "root": {
       "inputs": {
         "flake-utils": "flake-utils",
@@ -251,6 +267,7 @@
         "markdown-plus-nvim": "markdown-plus-nvim",
         "nixpkgs": "nixpkgs_2",
         "nui-nvim": "nui-nvim",
+        "nvim-pasta": "nvim-pasta",
         "tide-nvim": "tide-nvim"
       }
     },
