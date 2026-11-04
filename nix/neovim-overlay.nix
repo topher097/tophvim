@@ -31,7 +31,15 @@ with final.pkgs.lib; let
   all-plugins = with pkgs.vimPlugins; [
     alpha-nvim
     amp-nvim
-    copilot-lua
+    (locked-vim-plugins.copilot-lua.overrideAttrs (old: {
+      # Pin by rev: upstream re-tagged v2.0.4, breaking nixpkgs' stored hash
+      src = pkgs.fetchFromGitHub {
+        owner = "zbirenbaum";
+        repo = "copilot.lua";
+        rev = "b1482409cefe8b201f89122c682189fabf0436da"; # v2.0.4
+        hash = "sha256-05f76OeWBlFmlUh90tH4XMMKfNI1jnhuIJDqYPPQokA=";
+      };
+    }))
     opencode-nvim # https://github.com/nickjvandyke/opencode.nvim
     # plugins from nixpkgs go in here.
     # https://search.nixos.org/packages?channel=unstable&from=0&size=50&sort=relevance&type=packages&query=vimPlugins
